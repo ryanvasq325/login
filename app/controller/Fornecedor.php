@@ -14,7 +14,7 @@ class Fornecedor extends Base
             'titulo' => 'Lista de Fornecedores'
         ];
         return $this->getTwig()
-            ->render($response, $this->setView('listfornecedor'), $dadosTemplate)
+            ->render($response, $this->setView('login'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
