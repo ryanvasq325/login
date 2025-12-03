@@ -2,6 +2,9 @@
 
 namespace app\controller;
 
+use app\database\builder\InsertQuery;
+use app\database\builder\SelectQuery;
+
 class Login extends Base
 {
     public function login($request, $response)
@@ -19,13 +22,30 @@ class Login extends Base
             die;
         }
     }
-    public function precadastro($request,$response){
-        try{
+    public function precadastro($request, $response)
+    {
+        try {
             #Captura os dados do form
             $form = $request->getParsedBody();
-            var_dump($form);
-            die;
-        } catch (\Exception $e) {  
+            $dadosUsuario = [
+                'nome' => $form['nome'],
+                'sobrenome' => $form['sobrenome'],
+                'cpf' => $form['cpf'],
+                'rg' => $form['rg'],
+                'rg' => $form['rg'],
+                'senha' => password_hash($form['senha'], PASSWORD_DEFAULT)
+            ];
+            $IsInseted = InsertQuery::table('usuario')->save($dadosUsuario);
+            if (!$IsInseted) {
+                return $this->SendJson(
+                        $response,
+                        ['status' => false, 'msg' => 'Restrição', $IsInseted, 'id' => 0],
+                        403
+                    );
+            }
+            $id = SelectQuery::select('id')->from('usuario')->order('id', 'desc')->fetch();
+            $id_usuario = $id['id'];
+        } catch (\Exception $e) {
         }
     }
     public function autenticar($request, $response)
