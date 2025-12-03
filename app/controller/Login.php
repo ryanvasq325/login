@@ -36,15 +36,35 @@ class Login extends Base
             ];
             $IsInseted = InsertQuery::table('usuario')->save($dadosUsuario);
             if (!$IsInseted) {
-                return $this->SendJson(
-                        $response,
-                        ['status' => false, 'msg' => 'Restrição', $IsInseted, 'id' => 0],
-                        403
-                    );
+                return $this->SendJson($response,['status' => false, 'msg' => 'Restrição', $IsInseted, 'id' => 0],403);
             }
             $id = SelectQuery::select('id')->from('usuario')->order('id', 'desc')->fetch();
             $id_usuario = $id['id'];
+            #Finalizar Cadastro
+            #Inserimos o email
+            $dadosContato = [
+                'id_usuario' => $id_usuario,
+                'tipo' => 'email',
+                'contato' => $form['email'],
+            ];
+            InsertQuery::table('contato')->save($dadosContato);
+            #Inserimos o celular
+            $dadosContato = [
+                'id_usuario' => $id_usuario,
+                'tipo' => 'celular',
+                'contato' => $form['celular']
+            ];
+            InsertQuery::table('contato')->save($dadosContato);
+            #Inserimos o Whatsapp
+            $dadosContato = [
+                'id_usuario' => $id_usuario,
+                'tipo' => 'whatsapp',
+                'contato' => $form['whatsapp']
+            ];
+            InsertQuery::table('contato')->save($dadosContato);
+            return $this->SendJson($response,['status' => true, 'msg' => 'Cadastrado realizado com sucesso!', 'id' => $id_usuario],201);
         } catch (\Exception $e) {
+            return $this->SendJson($response,['status' => true, 'msg' => 'Restrição:' .  $e->getMessage(), 'id' => 0],500);
         }
     }
     public function autenticar($request, $response)
