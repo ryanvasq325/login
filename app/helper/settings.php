@@ -1,4 +1,5 @@
 <?php
+session_start();
 #Diretorio raiz da applicação WEB
 define('ROOT', dirname(__FILE__, 3));
 #Extensão padrão da camada de interação com usuário front-end.
