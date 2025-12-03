@@ -19,6 +19,15 @@ class Login extends Base
             die;
         }
     }
+    public function precadastro($request,$response){
+        try{
+            #Captura os dados do form
+            $form = $request->getParsedBody();
+            var_dump($form);
+            die;
+        } catch (\Exception $e) {  
+        }
+    }
     public function autenticar($request, $response)
     {
         try {
