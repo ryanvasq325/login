@@ -32,7 +32,6 @@ class Login extends Base
                 'sobrenome' => $form['sobrenome'],
                 'cpf' => $form['cpf'],
                 'rg' => $form['rg'],
-                'rg' => $form['rg'],
                 'senha' => password_hash($form['senha'], PASSWORD_DEFAULT)
             ];
             $IsInseted = InsertQuery::table('usuario')->save($dadosUsuario);
