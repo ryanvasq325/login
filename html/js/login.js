@@ -10,9 +10,21 @@ $('#whatsapp').inputmask({ "mask": ["(99) 99999-9999"] });
 preCadastro.addEventListener('click', async () => {
     try {
         const response = await Requests.SetForm('form').Post('login/precadastro');
-        if(response.status) {
-            
+        if (response.status) {
+            Swal.fire({
+                title: "Atenção",
+                text: response.msg,
+                icon: "error",
+                timer: 3000
+            });
         }
+        Swal.fire({
+            title: "Sucesso",
+            text: response.msg,
+            icon: "success",
+            timer: 3000
+        });
+        $('#pre-cadastro').modal('hide');
     } catch (error) {
         console.log(error);
     }
