@@ -36,7 +36,7 @@ class Login extends Base
             ];
             $IsInseted = InsertQuery::table('usuario')->save($dadosUsuario);
             if (!$IsInseted) {
-                return $this->SendJson($response,['status' => false, 'msg' => 'Restrição', $IsInseted, 'id' => 0],403);
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição', $IsInseted, 'id' => 0], 403);
             }
             $id = SelectQuery::select('id')->from('usuario')->order('id', 'desc')->fetch();
             $id_usuario = $id['id'];
@@ -62,17 +62,45 @@ class Login extends Base
                 'contato' => $form['whatsapp']
             ];
             InsertQuery::table('contato')->save($dadosContato);
-            return $this->SendJson($response,['status' => true, 'msg' => 'Cadastrado realizado com sucesso!', 'id' => $id_usuario],201);
+            return $this->SendJson($response, ['status' => true, 'msg' => 'Cadastrado realizado com sucesso!', 'id' => $id_usuario], 201);
         } catch (\Exception $e) {
-            return $this->SendJson($response,['status' => true, 'msg' => 'Restrição:' .  $e->getMessage(), 'id' => 0],500);
+            return $this->SendJson($response, ['status' => true, 'msg' => 'Restrição:' .  $e->getMessage(), 'id' => 0], 500);
         }
     }
     public function autenticar($request, $response)
     {
         try {
+            $form = $request->getParsedBody();
+            if (!isset($form['login']) || empty($form['login'])) {
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Por favor informe o login', 'id' => 0], 403);
+            }
+            if (!isset($form['senha']) || empty($form['senha'])) {
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Por favor informe a senha', 'id' => 0], 403);
+            }
+            $user = SelectQuery::select()
+            ->from('vw_usuario_contatos')
+            ->where('cpf','=',$form['login'],'or')
+            ->where('email','=',$form['login'],'or')
+            ->where('celular','=',$form['login'],'or')
+            ->where('whatsapp','=',$form['login'])
+            ->fetch();
+            if (!isset($user) || empty($user) || count($user) <= 0) {
+                return $this->SendJson(
+                    $response,
+                    ['status' => false, 'msg' => 'Usuario ou senha inválidos!', 'id' => $user['id']],
+                    403
+                );
+            }
+            if (!$user['ativo']) {
+            return $this->SendJson(
+                    $response,
+                    ['status' => false, 'msg' => 'Por enquanto você ainda não tem permissão de acessar o sistema!', 'id' => $user['id']],
+                    403
+                );
+            }
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
-            die;
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição'. $e->getMessage(),'id' => 0], 500);
+            }
         }
     }
-}
+
