@@ -87,14 +87,14 @@ class Login extends Base
             if (!isset($user) || empty($user) || count($user) <= 0) {
                 return $this->SendJson(
                     $response,
-                    ['status' => false, 'msg' => 'Usuario ou senha inválidos!', 'id' => $user['id']],
+                    ['status' => false, 'msg' => 'Usuario ou senha inválidos!', 'id' => 0],
                     403
                 );
             }
             if (!$user['ativo']) {
             return $this->SendJson(
                     $response,
-                    ['status' => false, 'msg' => 'Por enquanto você ainda não tem permissão de acessar o sistema!', 'id' => $user['id']],
+                    ['status' => false, 'msg' => 'Por enquanto você ainda não tem permissão de acessar o sistema!', 'id' => 0],
                     403
                 );
             }
